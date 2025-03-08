@@ -5,9 +5,9 @@ This script is designed to automate the process of modifying a specific file (`p
 
 > [!CAUTION]
 > ### Important Warning:
-**<span style="color:red">This script is intended for homelab use only.**  
-**<span style="color:red">Do not use this script in a production environment.**  
-Running this script in a production system could have unintended consequences and is ****<span style="color:red">not recommended.****
+>**<span style="color:red">This script is intended for homelab use only.**  
+>**<span style="color:red">Do not use this script in a production environment.**  
+>Running this script in a production system could have unintended consequences and is ****<span style="color:red">not recommended.****
 
 ### What Does This Script Do?
 The script performs the following actions:
