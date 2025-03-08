@@ -50,5 +50,3 @@ In some scenarios, modifications to the `proxmoxlib.js` file are required to adj
 
    ```bash
    ./remove_subscr_nag.sh
-
-
