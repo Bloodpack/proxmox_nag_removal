@@ -41,15 +41,14 @@ In some scenarios, modifications to the `proxmoxlib.js` file are required to adj
    ```bash
    git clone https://github.com/Bloodpack/proxmox_nag_removal.git
 
-   Modify the premission of the file
+2. **Modify the premission of the file**
 
    ```bash
    chmod +x remove_subscr_nag.sh
 
-   Run the script with this command
+3. **Run the script with this command**
 
    ```bash
    ./remove_subscr_nag.sh
-
 
 
