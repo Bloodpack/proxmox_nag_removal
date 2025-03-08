@@ -1,3 +1,18 @@
+# Script to remove the proxmox no subscription nag.
+################################################
+# !!!PLEASE USE THIS SCRIPT ONLY FOR HOMELAB!!!#
+################################################
+# Copyright (c) 2025 Bloodpack
+# Author: Bloodpack 
+# License: GPL-3.0 license
+# Follow or contribute on GitHub here:
+# https://github.com/Bloodpack/proxmox_nag_removal.git
+################################
+# VERSION: 1.0 from 08.03.2025 #
+################################
+
+
+
 #!/bin/bash
 
 # Define file paths
