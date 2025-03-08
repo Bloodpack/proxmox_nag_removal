@@ -3,7 +3,8 @@
 
 This script is designed to automate the process of modifying a specific file (`proxmoxlib.js`) in the Proxmox system and restarting the Proxmox Proxy service (`pveproxy`). It is intended for use in **homelab** environments only.
 
-### $${\color{red}Red}$$Important Warning:
+> [!CAUTION]
+### Important Warning:
 **<span style="color:red">This script is intended for homelab use only.**  
 **<span style="color:red">Do not use this script in a production environment.**  
 Running this script in a production system could have unintended consequences and is ****<span style="color:red">not recommended.****
