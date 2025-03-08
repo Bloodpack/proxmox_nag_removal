@@ -1,5 +1,5 @@
 
-# This script removes the " you have no valid subscription " popup on Proxmox VE
+# This script removes the no subscription popup on Proxmox VE
 
 This script is designed to automate the process of modifying a specific file (`proxmoxlib.js`) in the Proxmox system and restarting the Proxmox Proxy service (`pveproxy`). It is intended for use in **homelab** environments only.
 
@@ -10,8 +10,6 @@ This script is designed to automate the process of modifying a specific file (`p
 >Running this script in a production system could have unintended consequences and is **not recommended**.
 
 ### What Does This Script Do?
-
-This script removes the " **you have no valid subscription** " popup on Proxmox VE
 
 The script performs the following actions:
 
