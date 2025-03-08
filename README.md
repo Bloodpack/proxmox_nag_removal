@@ -38,6 +38,7 @@ The script performs the following actions:
 In some scenarios, modifications to the `proxmoxlib.js` file are required to adjust Proxmox behavior in a non-production environment. This script automates that process and ensures that any necessary changes are made with a backup and service restart.
 
 ### How to Use the Script
+
 1. **Clone or Download the Repository:**
 
    Clone this repository to your Proxmox server or download the script manually.
@@ -45,7 +46,7 @@ In some scenarios, modifications to the `proxmoxlib.js` file are required to adj
    ```bash
    git clone https://github.com/Bloodpack/proxmox_nag_removal.git
 
-2. **Modify the premission of the file**
+2. **Modify the permission of the script**
 
    ```bash
    chmod +x remove_subscr_nag.sh
