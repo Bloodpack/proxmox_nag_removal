@@ -10,6 +10,9 @@ This script is designed to automate the process of modifying a specific file (`p
 >Running this script in a production system could have unintended consequences and is ****<span style="color:red">not recommended.****
 
 ### What Does This Script Do?
+
+This script removes the " **you have no valid subscription** " popup on Proxmox VE
+
 The script performs the following actions:
 
 1. **Navigates to the directory** where the `proxmoxlib.js` file is located:
