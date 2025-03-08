@@ -39,5 +39,17 @@ In some scenarios, modifications to the `proxmoxlib.js` file are required to adj
    Clone this repository to your Proxmox server or download the script manually.
 
    ```bash
-   git clone https://github.com/yourusername/proxmox-script.git
+   git clone https://github.com/Bloodpack/proxmox_nag_removal.git
+
+   Modify the premission of the file
+
+   ```bash
+   chmod +x remove_subscr_nag.sh
+
+   Run the script with this command
+
+   ```bash
+   ./remove_subscr_nag.sh
+
+
 
