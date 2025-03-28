@@ -21,14 +21,14 @@ The script performs the following actions:
 
 3. **Modifies a specific line** in the `proxmoxlib.js` file:
    - The script searches for the following line:
-   ```javascript
+      ```javascript
    if (res === null || res === undefined || !res || res
          .data.status.toLowerCase() !== 'active') {
-   ```
+      ```
    - If it is found, the script will replace it with:
-     ```javascript
+      ```javascript
      if (false) {
-     ```
+      ```
 
 4. **Restarts the Proxmox Proxy service** (`pveproxy`):
    - The script restarts the service **only if the file has been modified**. If the file is already modified, it skips the restart.
