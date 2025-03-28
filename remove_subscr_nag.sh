@@ -34,18 +34,22 @@ new_content=""
 inside_block=false
 pattern="if (res === null || res === undefined || !res || res.data.status.toLowerCase() !== 'active') {"
 
+# Flag for whether the replacement has happened
+replacement_done=false
+
 while IFS= read -r line; do
-    # Check if we're inside the target block
+    # If we're inside the block that needs to be replaced
     if [[ "$inside_block" == true ]]; then
         if [[ "$line" =~ "}" ]]; then
             # Close the block, stop replacing
             new_content+="if (false) {\n"
             inside_block=false
+            replacement_done=true
         fi
         continue
     fi
 
-    # Check if the current line matches the start of the target pattern
+    # Check if the current line matches the pattern (start of block)
     if [[ "$line" =~ "$pattern" ]]; then
         inside_block=true
         new_content+="if (false) {\n"
@@ -58,9 +62,9 @@ done < "$FILE"
 echo -e "$new_content" > "$FILE"
 
 # Check if a change was made
-if [[ "$new_content" != "$(cat "$BACKUP_FILE")" ]]; then
-    CHANGE_MADE=true
+if $replacement_done; then
     echo "Line replaced successfully in $FILE"
+    CHANGE_MADE=true
 else
     echo "No changes made."
 fi
