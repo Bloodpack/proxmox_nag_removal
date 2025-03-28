@@ -33,8 +33,8 @@ echo "Backup created: $BACKUP_FILE"
 if grep -q "$TARGET_LINE" "$FILE"; then
     echo "The line is already replaced with '$TARGET_LINE'. No changes needed."
 else
-    # Edit the file using sed to replace the line if it's not already replaced
-    sed -i '/if (res === null || res === undefined || !res || res\.data\.status\.toLowerCase() !== "active") {/c\if (false) {' "$FILE" || { echo "Failed to edit $FILE"; exit 1; }
+    # Replace the multiline condition with `if (false) {`
+    sed -i ':a;N;$!ba;s/if (res === null || res === undefined || !res || res\n\s*\.data\.status\.toLowerCase() !== '\''active'\'' ) {/if (false) {/g' "$FILE" || { echo "Failed to edit $FILE"; exit 1; }
     echo "Line replaced successfully in $FILE"
     CHANGE_MADE=true
 fi
