@@ -21,9 +21,10 @@ The script performs the following actions:
 
 3. **Modifies a specific line** in the `proxmoxlib.js` file:
    - The script searches for the following line:
-     ```javascript
-     if (res === null || res === undefined || !res || res.data.status.toLowerCase() !== 'active') {
-     ```
+    ```javascript
+if (res === null || res === undefined || !res || res
+    .data.status.toLowerCase() !== 'active') {
+
    - If it is found, the script will replace it with:
      ```javascript
      if (false) {
