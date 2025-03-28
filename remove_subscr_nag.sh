@@ -29,35 +29,40 @@ cd "$PROXMOX_DIR" || { echo "Directory not found: $PROXMOX_DIR"; exit 1; }
 cp "$FILE" "$BACKUP_FILE" || { echo "Failed to backup $FILE"; exit 1; }
 echo "Backup created: $BACKUP_FILE"
 
-# Check if the target line is already in the file
-if grep -q "$TARGET_LINE" "$FILE"; then
-    echo "The line is already replaced with '$TARGET_LINE'. No changes needed."
-else
-    # Use awk to handle multiline search and replace
-    awk '
-    BEGIN { 
-        replace = 0 
-        pattern = "if (res === null || res === undefined || !res || res.data.status.toLowerCase() !== \"active\") {"
-        replacement = "if (false) {"
-    }
-    {
-        if (replace == 1) {
-            print replacement
-            replace = 0
-        } else {
-            # Check if the current line contains the first part of the target pattern
-            if ($0 ~ pattern) {
-                replace = 1
-                print replacement
-            } else {
-                print $0
-            }
-        }
-    }
-    ' "$FILE" > "$FILE.tmp" && mv "$FILE.tmp" "$FILE"
+# Read the file and look for the multiline pattern
+new_content=""
+inside_block=false
+pattern="if (res === null || res === undefined || !res || res.data.status.toLowerCase() !== 'active') {"
 
-    echo "Line replaced successfully in $FILE"
+while IFS= read -r line; do
+    # Check if we're inside the target block
+    if [[ "$inside_block" == true ]]; then
+        if [[ "$line" =~ "}" ]]; then
+            # Close the block, stop replacing
+            new_content+="if (false) {\n"
+            inside_block=false
+        fi
+        continue
+    fi
+
+    # Check if the current line matches the start of the target pattern
+    if [[ "$line" =~ "$pattern" ]]; then
+        inside_block=true
+        new_content+="if (false) {\n"
+    else
+        new_content+="$line\n"
+    fi
+done < "$FILE"
+
+# Save the modified content back into the file
+echo -e "$new_content" > "$FILE"
+
+# Check if a change was made
+if [[ "$new_content" != "$(cat "$BACKUP_FILE")" ]]; then
     CHANGE_MADE=true
+    echo "Line replaced successfully in $FILE"
+else
+    echo "No changes made."
 fi
 
 # Restart the PVE service to apply changes, only if a change was made
