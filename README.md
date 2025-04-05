@@ -38,9 +38,7 @@ In some scenarios, modifications to the `proxmoxlib.js` file are required to adj
 
 ### How to Use the Script
 
-1. **Clone or Download the Repository:**
-
-   Clone this repository to your Proxmox server or download the script manually.
+1. **Clone this repository to your Proxmox server or download the script manually.**
 
    ```bash
    git clone https://github.com/Bloodpack/proxmox_nag_removal.git
@@ -54,3 +52,18 @@ In some scenarios, modifications to the `proxmoxlib.js` file are required to adj
 
    ```bash
    ./remove_subscr_nag.sh
+
+
+# To revert the changes made by the script
+
+1. **Restore the backup-file proxmoxkib.js.bak**
+
+   ```bash
+   cp proxmoxkib.js.bak proxmoxkib.js
+
+2. **Or reinstall the proxmox-widget-toolkit with this command**
+
+   ```bash
+   apt-get install --reinstall proxmox-widget-toolkit
+
+
