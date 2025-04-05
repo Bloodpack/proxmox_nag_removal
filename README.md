@@ -56,12 +56,12 @@ In some scenarios, modifications to the `proxmoxlib.js` file are required to adj
 
 # To revert the changes made by the script
 
-1. **Restore the backup-file proxmoxkib.js.bak**
+1. **Restore the backup-file `proxmoxkib.js.bak`**
 
    ```bash
    cp proxmoxkib.js.bak proxmoxkib.js
 
-2. **Or reinstall the proxmox-widget-toolkit with this command**
+2. **Or reinstall the `proxmox-widget-toolkit` with this command**
 
    ```bash
    apt-get install --reinstall proxmox-widget-toolkit
