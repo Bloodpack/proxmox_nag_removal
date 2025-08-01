@@ -1,6 +1,8 @@
 
 # No subscription popup remover for Proxmox VE
 
+# This works only on versions below 8.4.1
+
 This script is designed to automate the process of modifying a specific file (`proxmoxlib.js`) in the Proxmox system and restarting the Proxmox Proxy service (`pveproxy`). It is intended for use in **homelab** environments only.
 
 > [!CAUTION]
