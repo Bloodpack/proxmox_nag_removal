@@ -24,14 +24,16 @@ This script removes the subscription nag screen from the Proxmox VE Web UI, and 
 
 🛠️ Installation Instructions
 
-    You must be logged in as root (no sudo required).
+You must be logged in as root (no sudo required).
 
 1. Create the patch script
-
-      nano /usr/local/sbin/remove-proxmox-nag.sh
+```
+nano /usr/local/sbin/remove-proxmox-nag.sh
+```
 
 Paste this script:
-```
+
+```bash
 #!/bin/bash
 
 # Path to original JS file
@@ -85,28 +87,34 @@ fi
 ```
 Make the script executable:
 
+```
 chmod +x /usr/local/sbin/remove-proxmox-nag.sh
-
+```
 2. Create the APT hook
 
+```
 nano /etc/apt/apt.conf.d/99-pve-no-nag
-
+```
 Paste:
 
+```bash
 DPkg::Post-Invoke {
   "if [ -x /usr/local/sbin/remove-proxmox-nag.sh ]; then /usr/local/sbin/remove-proxmox-nag.sh; fi";
 };
+```
 
 3. Test it manually (optional)
 
 Run the script directly:
 
+```shell
 /usr/local/sbin/remove-proxmox-nag.sh
-
+```
 Check that backups exist:
 
+```shell
 ls -lt /usr/share/javascript/proxmox-widget-toolkit/proxmoxlib.js.bak.*
-
+```
 🧠 Notes
 
     This script does not affect any Proxmox functionality — it only bypasses the UI nag.
