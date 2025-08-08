@@ -1,71 +1,122 @@
 
 # No subscription popup remover for Proxmox VE
 
-# This works only on versions below 8.4.1
+# This works only on versions below above V.9
 
-This script is designed to automate the process of modifying a specific file (`proxmoxlib.js`) in the Proxmox system and restarting the Proxmox Proxy service (`pveproxy`). It is intended for use in **homelab** environments only.
+📦 Disable Proxmox Subscription Nag with Auto-Patching Script
 
-> [!CAUTION]
-> ### Important Warning:
->**This script is intended for homelab use only.**  
->**Do not use this script in a production environment.**  
->Running this script in a production system could have unintended consequences and is **not recommended**.
+This script removes the subscription nag screen from the Proxmox VE Web UI, and automatically reapplies the patch after package upgrades. It also keeps a backup of the original file with rotation (last 3 backups only).
+⚙️ Features
 
-### What Does This Script Do?
+    ✅ Removes the "No valid subscription" popup in the Proxmox Web UI.
 
-The script performs the following actions:
+    ✅ Automatically reapplies after APT/DPKG updates via an APT hook.
 
-1. **Navigates to the directory** where the `proxmoxlib.js` file is located:
-   - `/usr/share/javascript/proxmox-widget-toolkit`
+    ✅ Creates a timestamped backup of the original file before patching.
 
-2. **Creates a backup** of the `proxmoxlib.js` file as a safety measure:
-   - `proxmoxlib.js.bak` will be created in the same directory.
+    ✅ Keeps only the last 3 backups to avoid clutter.
 
-3. **Modifies a specific line** in the `proxmoxlib.js` file:
-   - The script searches for the following line:
-   ```javascript
-   if (res === null || res === undefined || !res || res
-         .data.status.toLowerCase() !== 'active') {
-   ```
-   - If it is found, the script will replace it with:
-   ```javascript
-     if (false) {
-   ```
+📁 File Structure
 
-4. **Restarts the Proxmox Proxy service** (`pveproxy`):
-   - The script restarts the service **only if the file has been modified**. If the file is already modified, it skips the restart.
+/usr/local/sbin/remove-proxmox-nag.sh       # Patch script
+/etc/apt/apt.conf.d/99-pve-no-nag           # APT hook
+/usr/share/javascript/proxmox-widget-toolkit/  # Target JS file + backups
 
-### Why Is This Script Needed?
-In some scenarios, modifications to the `proxmoxlib.js` file are required to adjust Proxmox behavior in a non-production environment. This script automates that process and ensures that any necessary changes are made with a backup and service restart.
+🛠️ Installation Instructions
 
-### How to Use the Script
+    You must be logged in as root (no sudo required).
 
-1. **Clone this repository to your Proxmox server or download the script manually.**
+1. Create the patch script
 
-   ```bash
-   git clone https://github.com/Bloodpack/proxmox_nag_removal.git
+nano /usr/local/sbin/remove-proxmox-nag.sh
 
-2. **Modify the permission of the script**
+Paste this script:
 
-   ```bash
-   chmod +x remove_subscr_nag.sh
+#!/bin/bash
 
-3. **Run the script with this command**
+# Path to original JS file
+JS_FILE="/usr/share/javascript/proxmox-widget-toolkit/proxmoxlib.js"
 
-   ```bash
-   ./remove_subscr_nag.sh
+# Backup directory (same as JS file)
+BACKUP_DIR="/usr/share/javascript/proxmox-widget-toolkit"
+TIMESTAMP=$(date +%Y%m%d%H%M%S)
+BACKUP_FILE="${BACKUP_DIR}/proxmoxlib.js.bak.${TIMESTAMP}"
 
+# Make sure JS file exists
+if [ ! -f "$JS_FILE" ]; then
+    echo "[no-nag] ERROR: $JS_FILE not found."
+    exit 1
+fi
 
-# To revert the changes made by the script
+# Skip if already patched
+if grep -q "NoMoreNagging" "$JS_FILE"; then
+    echo "[no-nag] Already patched: $JS_FILE"
+    exit 0
+fi
 
-1. **Restore the backup-file `proxmoxlib.js.bak`**
+# Create backup
+cp "$JS_FILE" "$BACKUP_FILE"
+echo "[no-nag] Backup created at: $BACKUP_FILE"
 
-   ```bash
-   cp proxmoxlib.js.bak proxmoxlib.js
+# Rotate backups (keep only last 3)
+BACKUPS=($(ls -1t ${BACKUP_DIR}/proxmoxlib.js.bak.* 2>/dev/null))
+NUM_BACKUPS=${#BACKUPS[@]}
 
-2. **Or reinstall the `proxmox-widget-toolkit` with this command**
+if [ "$NUM_BACKUPS" -gt 3 ]; then
+    echo "[no-nag] Rotating backups. Keeping latest 3..."
+    for ((i=3; i<NUM_BACKUPS; i++)); do
+        rm -f "${BACKUPS[$i]}"
+        echo "[no-nag] Deleted old backup: ${BACKUPS[$i]}"
+    done
+fi
 
-   ```bash
-   apt-get install --reinstall proxmox-widget-toolkit
+# Apply patch
+sed -i '/data\.status/{s/!//;s/active/NoMoreNagging/}' "$JS_FILE"
 
+# Confirm patch
+if grep -q "NoMoreNagging" "$JS_FILE"; then
+    echo "[no-nag] Patch applied successfully to $JS_FILE"
+else
+    echo "[no-nag] Patch failed. Restoring from backup..."
+    cp "$BACKUP_FILE" "$JS_FILE"
+    echo "[no-nag] Original restored from: $BACKUP_FILE"
+    exit 1
+fi
 
+Make the script executable:
+
+chmod +x /usr/local/sbin/remove-proxmox-nag.sh
+
+2. Create the APT hook
+
+nano /etc/apt/apt.conf.d/99-pve-no-nag
+
+Paste:
+
+DPkg::Post-Invoke {
+  "if [ -x /usr/local/sbin/remove-proxmox-nag.sh ]; then /usr/local/sbin/remove-proxmox-nag.sh; fi";
+};
+
+3. Test it manually (optional)
+
+Run the script directly:
+
+/usr/local/sbin/remove-proxmox-nag.sh
+
+Check that backups exist:
+
+ls -lt /usr/share/javascript/proxmox-widget-toolkit/proxmoxlib.js.bak.*
+
+🧠 Notes
+
+    This script does not affect any Proxmox functionality — it only bypasses the UI nag.
+
+    Backups are stored in the same directory as the original JS file.
+
+    Be sure to clear your browser cache after patching.
+
+🛑 Disclaimer
+
+Use at your own risk. This script modifies Proxmox UI files, which could be overwritten during updates. The APT hook helps to reapply the patch automatically, but always check after major upgrades.
+
+This is intended for homelab or non-production environments where the subscription nag is undesired.
