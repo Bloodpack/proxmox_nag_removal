@@ -80,6 +80,14 @@ sed -i '/data\.status/{s/!//;s/active/NoMoreNagging/}' "$JS_FILE"
 # Confirm patch
 if grep -q "NoMoreNagging" "$JS_FILE"; then
     echo "[no-nag] Patch applied successfully to $JS_FILE"
+    
+    # Restart pveproxy to reload patched JS
+    if systemctl restart pveproxy; then
+        echo "[no-nag] Restarted pveproxy successfully."
+    else
+        echo "[no-nag] Failed to restart pveproxy!"
+        exit 1
+    fi
 else
     echo "[no-nag] Patch failed. Restoring from backup..."
     cp "$BACKUP_FILE" "$JS_FILE"
