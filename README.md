@@ -28,7 +28,7 @@ This script removes the subscription nag screen from the Proxmox VE Web UI, and 
 
 1. Create the patch script
 
-```nano /usr/local/sbin/remove-proxmox-nag.sh```
+      nano /usr/local/sbin/remove-proxmox-nag.sh
 
 Paste this script:
 ```
